@@ -19,6 +19,21 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: cartify-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - cartify_redis_data:/data
+    command: redis-server --appendonly yes --requirepass cartify-redis-password
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   mailhog:
     image: mailhog/mailhog
     container_name: cartify-mailhog
@@ -29,3 +44,4 @@ services:
 
 volumes:
   cartify_db_data:
+  cartify_redis_data:
