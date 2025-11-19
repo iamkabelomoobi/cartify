@@ -2,7 +2,9 @@
 PYTHON := python
 PIP := pip
 UVICORN_APP := app.main:app
+UVICORN_PORT := 4000
 VENV := .venv
+
 
 # ----- HELP -----
 .PHONY: help
@@ -13,9 +15,9 @@ help:
 	@echo "  make install     - Install dependencies from requirements.txt"
 	@echo "  make freeze      - Export dependencies to requirements.txt"
 	@echo "  make run         - Run FastAPI app with Uvicorn (reload)"
-	@echo "  make db-up       - Start Postgres + Mailhog via docker-compose"
-	@echo "  make db-down     - Stop docker-compose services"
-	@echo "  make db-logs     - Tail docker-compose logs"
+	@echo "  make db-up       - Start Postgres + Mailhog via docker compose"
+	@echo "  make db-down     - Stop docker compose services"
+	@echo "  make db-logs     - Tail docker compose logs"
 	@echo "  make fmt         - (Optional) Format code with black, isort if installed"
 
 # ----- VENV & DEPENDENCIES -----
@@ -38,20 +40,25 @@ freeze:
 # ----- RUN APP -----
 .PHONY: run
 run:
-	uvicorn $(UVICORN_APP) --reload
+	uvicorn $(UVICORN_APP) --reload --host 0.0.0.0 --port $(UVICORN_PORT)
 
 # ----- DOCKER: DB & MAILHOG -----
 .PHONY: db-up
 db-up:
-	docker-compose up -d
+	docker compose up -d
 
 .PHONY: db-down
 db-down:
-	docker-compose down
+	docker compose down
 
 .PHONY: db-logs
 db-logs:
-	docker-compose logs -f
+	docker compose logs -f
+
+# ----- SEED: create initial users -----
+.PHONY: seed
+seed:
+	$(PYTHON) scripts/seeder.py
 
 # ----- OPTIONAL: FORMAT -----
 .PHONY: fmt
