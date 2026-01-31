@@ -27,7 +27,7 @@ venv:
 
 .PHONY: activate
 activate:
-	@echo "Run: source $(VENV)/bin/activate"
+	@echo "Run: source .venv/bin/activate"
 
 .PHONY: install
 install:
