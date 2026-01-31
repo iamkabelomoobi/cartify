@@ -3,12 +3,14 @@ from __future__ import annotations
 import logging
 import uuid
 
+import app.schemas
 from app.core.database import SessionLocal, Base, engine
-from app.core.security import hash_password
+from app.core.security import AuthService
 from app.schemas.user import User
 from app.schemas.admin import Admin
 from app.schemas.customer import Customer
 
+auth = AuthService()
 logger = logging.getLogger("cartify.seeder")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
@@ -24,8 +26,7 @@ def create_user_if_missing(
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         logger.info(f"User {email} already exists. Updating password hash...")
-        # Update password to ensure it's properly hashed
-        existing.password = hash_password(password)
+        existing.password = auth.hash_password(password)
         db.commit()
         return existing
 
@@ -34,7 +35,7 @@ def create_user_if_missing(
         id=user_id,
         email=email,
         phone=phone,
-        password=hash_password(password),
+        password=auth.hash_password(password),
         role=role,
         is_verified=is_verified,
     )

@@ -57,3 +57,12 @@ class ResetPasswordRequest(BaseModel):
 
 class ResetPasswordResponse(BaseModel):
     message: str
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str = Field(..., description="Refresh token to get new access token")
+
+
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str

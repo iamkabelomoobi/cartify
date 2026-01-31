@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from sqlalchemy import Column, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
@@ -14,7 +13,9 @@ class User(Base):
     password = Column(String(255), nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
     created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
     )
 
     admin = relationship(
@@ -29,6 +30,13 @@ class User(Base):
         uselist=False,
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+
+    sessions = relationship(
+        "Session",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     def __repr__(self) -> str:

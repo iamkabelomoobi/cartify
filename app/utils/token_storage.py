@@ -41,6 +41,5 @@ def get_tokens_redis(redis_client, user_id: str) -> dict | None:
 
 
 def delete_tokens_redis(redis_client, user_id: str) -> None:
-    """Delete both access and refresh tokens from Redis"""
     keys = create_token_keys(user_id)
     redis_client.delete(keys["access"], keys["refresh"])

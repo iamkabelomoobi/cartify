@@ -11,7 +11,6 @@ logger = logging.getLogger("uvicorn.error")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Check database connection
     db_connected = False
     try:
         with engine.connect() as conn:
@@ -23,7 +22,6 @@ async def lifespan(app: FastAPI):
 
     app.state.db_connected = db_connected
 
-    # Check Redis connection
     redis_connected = ping_redis()
     app.state.redis_connected = redis_connected
 
@@ -32,12 +30,11 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Cartify API.")
 
 
-# Ensure all ORM model modules are imported
 try:
-    import app.schemas.user  # noqa: F401
-    import app.schemas.admin  # noqa: F401
-    import app.schemas.customer  # noqa: F401
-    import app.schemas.otp  # noqa: F401
+    import app.schemas.user
+    import app.schemas.admin
+    import app.schemas.customer
+    import app.schemas.otp
 except ImportError:
     logger.debug("One or more schema modules failed to import during startup.")
 

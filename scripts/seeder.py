@@ -1,6 +1,3 @@
-"""
-Central seeder runner — load and run individual seeder modules (e.g. user.py).
-"""
 
 import logging
 import importlib.util
